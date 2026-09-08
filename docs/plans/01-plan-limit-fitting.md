@@ -1,9 +1,9 @@
 # Plan 01 — Plan-limit fitting
 
-Status: proposed. Runs after `claude-budget-statusline` Plan 01 has shipped
+Status: proposed. Runs after `claude-spend-statusline` Plan 01 has shipped
 and its collector has gathered about a month of data on the home machine.
 
-This repo becomes the plan-user sibling of `claude-budget-statusline`: the
+This repo becomes the plan-user sibling of `claude-spend-statusline`: the
 same renderer and compaction machinery, with the day and month spend bars
 replaced by the 5-hour, 7-day and Fable windows, plus a fitter that learns
 how those windows actually charge for each kind of token.
@@ -17,14 +17,14 @@ name `plan-statusline`, which collided with plan mode, and over `quota`,
 (`/usage`, "usage limits", the `rate_limits` field), which is what users will
 search for.
 
-## What is copied from the budget plugin
+## What is copied from the spend plugin
 
 After its Plan 00 and Plan 01 ship, copy verbatim:
 
-- `statusline/budget_statusline/` minus `usage.py`'s spend parsing, renamed
+- `statusline/spend_statusline/` minus `usage.py`'s spend parsing, renamed
   to the package name here; `layout.py`, `display.py`, `calendar.py`,
   `repo.py`, `input.py`, `doctor.py` come across unchanged.
-- `statusline/budget_statusline/compact/` in full, `compact-hook.sh`,
+- `statusline/spend_statusline/compact/` in full, `compact-hook.sh`,
   `hooks/hooks.json`, `config/compact.conf`, the compaction tests and
   fixtures, the `compact-point` and `recalibrate` skills.
 - The test harness: bats layout, fake `curl`, libfaketime rules, the skill
@@ -32,7 +32,7 @@ After its Plan 00 and Plan 01 ship, copy verbatim:
 
 Then port `statusline/usage-statusline.sh` (the home script, copied here as
 of 2026-09-07) onto that renderer: the 5h, 7d and Fable bars with their
-reset countdowns, the credits line, and the location row, which the budget
+reset countdowns, the credits line, and the location row, which the spend
 renderer already draws. The home script's width reserve, bar floor and
 wrap rules are documented in its header and must survive the port; its
 rendered lines become goldens first.
@@ -66,7 +66,7 @@ this plan fills:
   cache write 5m, cache write 1h, output including thinking), web search and
   fetch request counts, `speed`, and whether it was a subagent call.
 - `usage_samples`: the 5h and 7d `used_percentage` and `resets_at` from the
-  statusline JSON on every render (the budget collector already writes these
+  statusline JSON on every render (the spend collector already writes these
   when present), plus the Fable window and the overage and extra-usage flags
   from the oauth usage endpoint on its 60-second refresh.
 - Per-turn counts, for the intercept that absorbs Claude Code's own Haiku
@@ -159,7 +159,7 @@ Additions worth considering, each behind a display name:
 
 ## Tests
 
-Everything from the budget plugin's compaction tests, plus:
+Everything from the spend plugin's compaction tests, plus:
 
 - The estimator on synthetic data with known weights: recovers them within
   the bootstrap interval at 50, 200 and 1000 intervals; with 20% of
