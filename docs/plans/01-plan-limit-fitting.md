@@ -10,20 +10,12 @@ how those windows actually charge for each kind of token.
 
 ## Naming
 
-The working name is `claude-plan-statusline` (plugin `plan-statusline`,
-skills `/plan-statusline:install` and so on). One problem with it: "plan" is
-already a Claude Code word (plan mode, `/plan`, the Plan agent), so
-`/plan-statusline:doctor` reads like a plan-mode command and skill-trigger
-tests will have to fight that. Alternatives, in rough order of preference:
-
-- `claude-quota-statusline` / `quota-statusline`: budget is dollars, quota is
-  an allowance; reads cleanly next to the sibling.
-- `claude-limits-statusline`: literal, matches the JSON field name
-  `rate_limits`.
-- `claude-window-statusline`: after the 5h and 7d windows; less obvious.
-- `claude-meter-statusline`: neutral, but says nothing about plans.
-
-Renaming is one `mv` and a `sed` until the remote exists.
+`claude-usage-statusline`, plugin `usage-statusline`, skills
+`/usage-statusline:install` and so on. Chosen 2026-09-08 over the working
+name `plan-statusline`, which collided with plan mode, and over `quota`,
+`headroom` and `runway`. "Usage" is Anthropic's own word for these windows
+(`/usage`, "usage limits", the `rate_limits` field), which is what users will
+search for.
 
 ## What is copied from the budget plugin
 
@@ -38,7 +30,7 @@ After its Plan 00 and Plan 01 ship, copy verbatim:
 - The test harness: bats layout, fake `curl`, libfaketime rules, the skill
   runner and trigger scorer, CI workflow, `docs/preview.py`.
 
-Then port `statusline/plan-statusline.sh` (the home script, copied here as
+Then port `statusline/usage-statusline.sh` (the home script, copied here as
 of 2026-09-07) onto that renderer: the 5h, 7d and Fable bars with their
 reset countdowns, the credits line, and the location row, which the budget
 renderer already draws. The home script's width reserve, bar floor and
