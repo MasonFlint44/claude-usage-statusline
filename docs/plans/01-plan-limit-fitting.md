@@ -39,9 +39,8 @@ rendered lines become goldens first.
 
 Copying rather than sharing is a deliberate choice so each plugin installs
 self-contained from the marketplace. Keep the `compact/` package byte-identical
-between the two repos and sync it with a script, the way `work-export.sh`
-does in dotclaude; if the copies start to diverge, that is the moment to
-extract a shared package.
+between the two repos and sync it with a script; if the copies start to
+diverge, that is the moment to extract a shared package.
 
 ## The problem the fitter solves
 
@@ -172,8 +171,7 @@ Everything from the spend plugin's compaction tests, plus:
   reaching `formula.py`.
 - Render goldens for the window bars, the projection, the cue, at 60 and
   120 columns.
-- Skill runs and trigger scoring for the renamed skills, with the plan-mode
-  near-misses if the working name stays.
+- Skill runs and trigger scoring for the renamed skills.
 
 ## Skills and docs
 
