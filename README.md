@@ -9,7 +9,7 @@ learns how the windows charge for each kind of token.
 
 ## Status
 
-Interim release (0.1.0). `statusline/usage-statusline.sh` is the author's
+Interim release (0.1.x). `statusline/usage-statusline.sh` is the author's
 home statusline script as of 2026-09-07, packaged with an install skill so it
 can be used before the port described in
 [`docs/plans/01-plan-limit-fitting.md`](docs/plans/01-plan-limit-fitting.md).
@@ -40,13 +40,18 @@ By hand: copy `statusline/usage-statusline.sh` to `~/.claude/statusline/`,
 make it executable, and add to `~/.claude/settings.json`:
 
 ```json
-"statusLine": { "type": "command", "command": "bash ~/.claude/statusline/usage-statusline.sh" }
+"statusLine": { "type": "command", "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/statusline/usage-statusline.sh\"" }
 ```
+
+Claude Code runs the command through a shell, so the path is resolved where
+it runs: a `~/.claude` mounted into a devcontainer under another user's home
+works from the same settings file. Install `jq` and `curl` in the container
+too.
 
 ## Privacy
 
 The Fable bar reads your Claude Code OAuth token from
-`~/.claude/.credentials.json` and calls `api.anthropic.com/api/oauth/usage`,
+`.credentials.json` in your Claude config directory and calls `api.anthropic.com/api/oauth/usage`,
 the same undocumented endpoint the `/usage` page uses. The token is passed to
 `curl` on stdin, never on the command line. Results are cached in
 `~/.cache/claude-statusline/`. Nothing else leaves your machine.

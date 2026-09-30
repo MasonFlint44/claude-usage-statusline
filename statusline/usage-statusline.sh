@@ -123,7 +123,7 @@ now=$(date +%s)
 # The spend fields are ACCOUNT-WIDE overage credits, not Fable-scoped.
 # Runs detached.
 refresh_fable() {
-    local creds="$HOME/.claude/.credentials.json"
+    local creds="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.credentials.json"
     [ -r "$creds" ] || return
     local tok exp
     tok=$(jq -r '.claudeAiOauth.accessToken // empty' "$creds" 2>/dev/null)
