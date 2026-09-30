@@ -27,9 +27,14 @@ above zero, and a git location row.
 
 ## Install
 
-As a plugin: clone this repo, start Claude Code with
-`claude --plugin-dir /path/to/claude-usage-statusline`, and run
-`/usage-statusline:install` (or ask Claude to install the usage statusline).
+As a plugin, from the
+[claude-toolbox](https://github.com/MasonFlint44/claude-toolbox) marketplace:
+
+```
+/plugin marketplace add MasonFlint44/claude-toolbox
+/plugin install usage-statusline@claude-toolbox
+/usage-statusline:install
+```
 
 By hand: copy `statusline/usage-statusline.sh` to `~/.claude/statusline/`,
 make it executable, and add to `~/.claude/settings.json`:
