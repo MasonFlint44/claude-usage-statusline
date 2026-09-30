@@ -5,6 +5,8 @@ The plan-user sibling of
 5-hour, 7-day and Fable window bars, the compaction point, and a fitter that
 learns how the windows charge for each kind of token.
 
+![the statusline as rendered in a terminal](docs/preview.svg)
+
 ## Status
 
 Interim release (0.1.0). `statusline/usage-statusline.sh` is the author's
@@ -43,3 +45,8 @@ The Fable bar reads your Claude Code OAuth token from
 the same undocumented endpoint the `/usage` page uses. The token is passed to
 `curl` on stdin, never on the command line. Results are cached in
 `~/.cache/claude-statusline/`. Nothing else leaves your machine.
+
+## Development
+
+`docs/preview.py` regenerates the preview above from the script itself
+(python3, git and jq). Run it after any change to what the script draws.
