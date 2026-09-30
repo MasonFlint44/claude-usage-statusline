@@ -54,7 +54,7 @@ The Fable bar reads your Claude Code OAuth token from
 `.credentials.json` in your Claude config directory and calls `api.anthropic.com/api/oauth/usage`,
 the same undocumented endpoint the `/usage` page uses. The token is passed to
 `curl` on stdin, never on the command line. Results are cached in
-`~/.cache/claude-statusline/`. Nothing else leaves your machine.
+`cache/statusline/plan-usage` in the same directory. Nothing else leaves your machine.
 
 ## Development
 

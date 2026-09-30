@@ -44,10 +44,10 @@ def main():
     open(os.path.join(work, "README.md"), "w").write("hello\n" * 24 + "world\n" * 8)
     open(os.path.join(work, "scratch.txt"), "w").write("y\n" * 4)
     # A fresh cache and no credentials in the fake HOME: nothing is fetched.
-    cache = os.path.join(tmp, ".cache", "claude-statusline"); os.makedirs(cache)
+    cache = os.path.join(tmp, ".claude", "cache", "statusline"); os.makedirs(cache)
     now = int(time.time())
     # The extra 30 s keeps a slow run from ticking a countdown down a minute.
-    open(os.path.join(cache, "fable-usage"), "w").write(CACHE.format(reset=now + 2 * 86400 + 5 * 3600 + 30))
+    open(os.path.join(cache, "plan-usage"), "w").write(CACHE.format(reset=now + 2 * 86400 + 5 * 3600 + 30))
     env = {**os.environ, "HOME": tmp, "COLUMNS": str(COLS)}
     env.pop("CLAUDE_CONFIG_DIR", None)
     out = subprocess.run(["bash", SCRIPT], input=INPUT % (now + 100 * 60 + 30, now + 4 * 86400 + 30, work),

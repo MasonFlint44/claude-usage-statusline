@@ -103,16 +103,17 @@ fmt_money() {
     }'
 }
 
-# --- Fable weekly limit + credit spend (cached, refreshed in background) ---
+# --- Plan usage: Fable weekly limit + credit spend (cached, refreshed in background) ---
 # This is the same data /usage renders: GET api.anthropic.com/api/oauth/usage with the
 # CLI's own OAuth token. The response's limits[] carries a kind=weekly_scoped entry
 # scoped to model "Fable" -- the included weekly allotment as a 0-100 percent -- and
 # spend.used is real credit-overage money, nonzero only after that bar saturates.
 # Undocumented internal endpoint, so every fetch/parse failure degrades to "keep the
 # stale cache" and a valid-but-Fable-less response blanks it (segment hides itself).
-CACHE_DIR="$HOME/.cache/claude-statusline"
-CACHE_FILE="$CACHE_DIR/fable-usage"
-LOCK_DIR="$CACHE_DIR/fable.lock"
+# The cache lives in the Claude config dir, so a devcontainer that mounts it shares it.
+CACHE_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/cache/statusline"
+CACHE_FILE="$CACHE_DIR/plan-usage"
+LOCK_DIR="$CACHE_DIR/plan-usage.lock"
 REFRESH_INTERVAL=60
 mkdir -p "$CACHE_DIR" 2>/dev/null
 
@@ -122,7 +123,7 @@ now=$(date +%s)
 # "<fable-percent> <spend-dollars> <fable-reset-epoch> <spend-limit-dollars>".
 # The spend fields are ACCOUNT-WIDE overage credits, not Fable-scoped.
 # Runs detached.
-refresh_fable() {
+refresh_usage() {
     local creds="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.credentials.json"
     [ -r "$creds" ] || return
     local tok exp
@@ -169,13 +170,13 @@ if [ ! -f "$CACHE_FILE" ] || [ "$cache_age" -ge "$REFRESH_INTERVAL" ]; then
     fi
     # mkdir is atomic: only one refresher runs at a time.
     if mkdir "$LOCK_DIR" 2>/dev/null; then
-        ( refresh_fable; rmdir "$LOCK_DIR" 2>/dev/null ) >/dev/null 2>&1 &
+        ( refresh_usage; rmdir "$LOCK_DIR" 2>/dev/null ) >/dev/null 2>&1 &
         disown 2>/dev/null
     fi
 fi
 
-fable_pct=""; fable_spend=""; fable_reset=""; spend_limit=""
-[ -f "$CACHE_FILE" ] && read -r fable_pct fable_spend fable_reset spend_limit < "$CACHE_FILE" 2>/dev/null
+fable_pct=""; spend_used=""; fable_reset=""; spend_limit=""
+[ -f "$CACHE_FILE" ] && read -r fable_pct spend_used fable_reset spend_limit < "$CACHE_FILE" 2>/dev/null
 
 # Model info
 model=$(echo "$input" | jq -r '.model.display_name // empty')
@@ -340,13 +341,13 @@ build_fable() { # $1 = bar width
 # rare enough that the line materializing IS the alert; the rest of the time
 # the layout doesn't pay for it.
 build_credits() {
-    [ -n "$fable_spend" ] || return
-    awk -v v="$fable_spend" 'BEGIN{exit !(v > 0)}' || return
+    [ -n "$spend_used" ] || return
+    awk -v v="$spend_used" 'BEGIN{exit !(v > 0)}' || return
     local pct=0
-    [ -n "$spend_limit" ] && pct=$(awk -v u="$fable_spend" -v l="$spend_limit" \
+    [ -n "$spend_limit" ] && pct=$(awk -v u="$spend_used" -v l="$spend_limit" \
         'BEGIN{printf "%d", (l > 0) ? u * 100 / l : 0}')
     local s="credits:$(bar "$pct" "$BAR_MIN")"
-    s="$s ${CLR_DIM}$(fmt_money "$fable_spend")"
+    s="$s ${CLR_DIM}$(fmt_money "$spend_used")"
     [ -n "$spend_limit" ] && s="$s/$(fmt_money "$spend_limit")"
     printf '%s' "$s${CLR_RESET}"
 }

@@ -4,6 +4,18 @@ Versions follow the `version` field in `.claude-plugin/plugin.json`; Claude
 Code offers a plugin update when that field changes. Each version is a git
 tag (`v0.1.0`) and a GitHub release with this section as its notes.
 
+## 0.2.0 — 2026-09-30
+
+- **The cache moved into the Claude config directory.** The usage snapshot
+  now lives at `${CLAUDE_CONFIG_DIR:-~/.claude}/cache/statusline/plan-usage`
+  instead of `~/.cache/claude-statusline/fable-usage`, so a devcontainer that
+  mounts `~/.claude` shares it. The file was renamed because it holds more
+  than the Fable window: the `credits:` spend is account-wide. The first
+  render after updating fetches a fresh copy. The old directory is no longer
+  read, so you can delete `~/.cache/claude-statusline/`.
+- Re-run `/usage-statusline:install` after updating so the installed copy of
+  the script picks this up.
+
 ## 0.1.1 — 2026-09-30
 
 - **Portable `statusLine` command.** The install skill now writes
