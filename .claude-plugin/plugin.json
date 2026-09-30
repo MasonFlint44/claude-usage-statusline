@@ -1,0 +1,12 @@
+{
+  "name": "usage-statusline",
+  "displayName": "Usage Statusline",
+  "version": "0.1.0",
+  "description": "Claude Code statusline for Pro and Max plan users: 5-hour, 7-day and Fable usage bars with reset countdowns, plus a git location row. Install with /usage-statusline:install. Interim release of the home bash script; Linux, WSL and Git Bash only for now.",
+  "author": { "name": "Mason Flint" },
+  "license": "MIT",
+  "homepage": "https://github.com/MasonFlint44/claude-usage-statusline",
+  "repository": "https://github.com/MasonFlint44/claude-usage-statusline",
+  "keywords": ["statusline", "usage", "limits", "plan"],
+  "skills": "./skills/"
+}

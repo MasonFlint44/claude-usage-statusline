@@ -5,6 +5,41 @@ The plan-user sibling of
 5-hour, 7-day and Fable window bars, the compaction point, and a fitter that
 learns how the windows charge for each kind of token.
 
-Nothing is built yet. `statusline/usage-statusline.sh` is the home statusline
-script as of 2026-09-07, copied here as the starting point for the port
-described in the plan.
+## Status
+
+Interim release (0.1.0). `statusline/usage-statusline.sh` is the author's
+home statusline script as of 2026-09-07, packaged with an install skill so it
+can be used before the port described in
+[`docs/plans/01-plan-limit-fitting.md`](docs/plans/01-plan-limit-fitting.md).
+The compaction point and the fitter are not built yet.
+
+It shows the model, effort, context and session cost, the 5-hour and 7-day
+usage bars, the Fable weekly bar, an overage `credits:` line while spend is
+above zero, and a git location row.
+
+## Requirements
+
+- Linux, WSL or Git Bash on Windows. macOS is not supported yet.
+- `jq`; `curl` for the Fable bar; `git` for the location row.
+- A Pro or Max plan, signed in with a Claude account (not an API key).
+
+## Install
+
+As a plugin: clone this repo, start Claude Code with
+`claude --plugin-dir /path/to/claude-usage-statusline`, and run
+`/usage-statusline:install` (or ask Claude to install the usage statusline).
+
+By hand: copy `statusline/usage-statusline.sh` to `~/.claude/statusline/`,
+make it executable, and add to `~/.claude/settings.json`:
+
+```json
+"statusLine": { "type": "command", "command": "bash ~/.claude/statusline/usage-statusline.sh" }
+```
+
+## Privacy
+
+The Fable bar reads your Claude Code OAuth token from
+`~/.claude/.credentials.json` and calls `api.anthropic.com/api/oauth/usage`,
+the same undocumented endpoint the `/usage` page uses. The token is passed to
+`curl` on stdin, never on the command line. Results are cached in
+`~/.cache/claude-statusline/`. Nothing else leaves your machine.
